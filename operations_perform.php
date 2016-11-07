@@ -36,7 +36,6 @@ if (!$course = $DB->get_record('course', array('id' => $courseid))) {
     print_error('coursemisconf');
 }
 
-// Security.
 // Make sure that the user has permissions to manage groups.
 require_course_login($course, true);
 
@@ -67,7 +66,6 @@ $PAGE->set_heading(get_string('pluginname', 'local_groupcopy'));
 $PAGE->set_title(get_string('pluginname', 'local_groupcopy'));
 $PAGE->navbar->add($strparticipants, new moodle_url('/user/index.php', array('id' => $courseid)));
 $PAGE->navbar->add(get_string('pluginname', 'local_groupcopy'));
-$PAGE->set_pagelayout('admin');
 
 // get all course contexts the user has managegroups capability on
 // those courses are legitimate as source for group structure copying.
@@ -152,9 +150,6 @@ if ($mform2->is_cancelled()) {
 
     // Copy groups that are not here.
     $BACKUP_IDS->allgroupsusers = array();
-    $BACKUP_IDS->groupings = array();
-    $BACKUP_IDS->groups = array();
-
     if ($data->groups) {
         foreach ($data->groups as $groupid) {
             $group = $DB->get_record('groups', array('id' => $groupid));
@@ -297,14 +292,11 @@ if ($mform2->is_cancelled()) {
         mtrace(get_string('nogroupuserbindingsfound', 'local_groupcopy'));
     }
 
-    if (debugging()) {
-        mtrace('Invalidating group cache for course '.$courseid);
-    }
-    // Invalidate the course groups cache seeing as we've changed it.
-    cache_helper::invalidate_by_definition('core', 'groupdata', array(), array($courseid));
-
     echo '</pre>';
     echo $OUTPUT->box_end();
+
+    // Invalidate the course groups cache seeing as we've changed it.
+    cache_helper::invalidate_by_definition('core', 'groupdata', array(), array($courseid));
 
     echo $OUTPUT->continue_button(new moodle_url('/group/index.php', array('id' => $courseid)));
     echo $OUTPUT->footer();

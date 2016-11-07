@@ -27,9 +27,6 @@
 require('../../config.php');
 require_once($CFG->dirroot.'/local/groupcopy/groupoperationsform.php');
 
-$PAGE->set_pagelayout('standard');
-$PAGE->set_pagetype('group-index');
-
 $courseid = required_param('id', PARAM_INT);
 
 $returnurl = new moodle_url('/group/index.php', array('id' => $courseid));
@@ -39,8 +36,6 @@ $nexturl = new moodle_url('/local/groupcopy/operations_perform.php', array('id' 
 if (!$course = $DB->get_record('course', array('id' => $courseid))) {
     print_error('coursemisconf');
 }
-
-// Security.
 
 // Make sure that the user has permissions to manage groups.
 require_course_login($course, true);
@@ -101,15 +96,10 @@ $url = new moodle_url('/local/groupcopy/operations.php');
 // Print the page and form.
 $PAGE->set_url($url);
 $PAGE->set_context($context);
-$PAGE->set_heading($course->fullname);
+$PAGE->set_heading(get_string('pluginname', 'local_groupcopy'));
 $PAGE->set_title(get_string('pluginname', 'local_groupcopy'));
-
-$strparticipants = get_string('participants');
-$strheading = get_string('pluginname', 'local_groupcopy');
-$strgroups = get_string('groups');
 $PAGE->navbar->add($strparticipants, new moodle_url('/user/index.php', array('id' => $courseid)));
-$PAGE->navbar->add($strgroups);
-$PAGE->navbar->add($strheading);
+$PAGE->navbar->add(get_string('pluginname', 'local_groupcopy'));
 
 // Print header.
 echo $OUTPUT->header();
