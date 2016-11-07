@@ -26,11 +26,11 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version  = 2015062400;   // The (date) version of this plugin
-$plugin->requires = 2016051900;   // Requires this Moodle version
+$plugin->version  = 2015062400;   // The (date) version of this plugin.
+$plugin->requires = 2016051900;   // Requires this Moodle version.
 $plugin->component = 'local_groupcopy';
 $plugin->maturity = MATURITY_RC;
-$plugin->release = '3.1.0 (Build 2015062400)';   // Requires this Moodle version
+$plugin->release = '3.1.0 (Build 2015062400)';   // Requires this Moodle version.
 
 // Non moodle attributes.
 $plugin->codeincrement = '3.1.0000';
