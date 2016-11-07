@@ -14,13 +14,21 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+/**
+ * @author      Valery Fremaux valery.fremaux@gmail.com
+ * @version     0.0.1
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU Public License
+ * @package     local_groupcopy
+ * @category    local
+ */
+
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot.'/lib/formslib.php');
 
 class Group_Operations_Setup1_Form extends moodleform {
 
-    function definition() {
+    public function definition() {
         global $CFG;
 
         $mform =& $this->_form;
@@ -28,7 +36,7 @@ class Group_Operations_Setup1_Form extends moodleform {
         $options = $this->_customdata['options'];
         $courseid = $this->_customdata['courseid'];
 
-        $mform->addElement('header', 'general', '');//fill in the data depending on page params
+        $mform->addElement('header', 'general', ''); // Fill in the data depending on page params.
 
         // Later using set_data.
         $mform->addElement('select', 'fromcourse', $text, $options);
@@ -43,21 +51,21 @@ class Group_Operations_Setup1_Form extends moodleform {
 
     }
 
-    function validation($data, $files) {
+    public function validation($data, $files) {
         return parent::validation($data, $files);
     }
 }
 
 class Group_Operations_Setup2_Form extends moodleform {
 
-    function definition() {
+    public function definition() {
         global $CFG, $DB;
 
         $mform =& $this->_form;
         $roleoptions = $this->_customdata['roles'];
         $groupoptions = $this->_customdata['groups'];
-        $sourcecourseid = $this->_customdata['fromcourseid']; // target course
-        $courseid = $this->_customdata['courseid']; // origin course
+        $sourcecourseid = $this->_customdata['fromcourseid']; // Target course.
+        $courseid = $this->_customdata['courseid']; // Origin course.
 
         $mform->addElement('header', 'groups', get_string('groupcopychoosegroups', 'local_groupcopy')); //fill in the data depending on page params
 
@@ -100,7 +108,7 @@ class Group_Operations_Setup2_Form extends moodleform {
         $mform->setConstants(array('fromcourse' => $sourcecourseid));
     }
 
-    function validation($data, $files) {
+    public function validation($data, $files) {
         return parent::validation($data, $files);
     }
 }
