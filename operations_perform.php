@@ -20,7 +20,7 @@
  * @author  Valery Fremaux valery.fremaux@institut-iperia.fr
  * @version 0.0.1
  * @license http://www.gnu.org/copyleft/gpl.html GNU Public License
- * @package local_groupcopy
+ * @package groups
  */
 
 require('../../config.php');
@@ -55,12 +55,12 @@ $strdescription      = get_string('description');
 
 $syscontext = context_system::instance();
 
-// If we're not a course creator , we can only import from our own courses.
+// if we're not a course creator , we can only import from our own courses.
 if (has_capability('moodle/course:create', $syscontext)) {
     $creator = true;
 }
 
-// Print the page and form.
+// Print the page and form
 $PAGE->set_url($thisurl);
 $PAGE->set_context($context);
 $PAGE->set_heading(get_string('pluginname', 'local_groupcopy'));
@@ -69,14 +69,11 @@ $PAGE->navbar->add($strparticipants, new moodle_url('/user/index.php', array('id
 $PAGE->navbar->add(get_string('pluginname', 'local_groupcopy'));
 $PAGE->set_pagelayout('admin');
 
-/*
- * get all course contexts the user has managegroups capability on
- * those courses are legitimate as source for group structure copying.
- * @see
- */
+// get all course contexts the user has managegroups capability on
+// those courses are legitimate as source for group structure copying.
+// @see
 
-$options = array('options' => null, 'courseid' => $course->id, 'text' => get_string('coursestaught', 'local_groupcopy'));
-$mform1 = new Group_Operations_Setup1_Form($thisurl, $options);
+$mform1 = new Group_Operations_Setup1_Form($thisurl, array('options' => null, 'courseid' => $course->id, 'text' => get_string('coursestaught', 'local_groupcopy')));
 
 if ($mform1->is_cancelled()) {
     echo $OUTPUT->header();
@@ -96,8 +93,7 @@ $systemcontext = context_system::instance();
 $roles = get_roles_on_exact_context($context);
 $fixedroles = role_fix_names($roles, $systemcontext, ROLENAME_ORIGINAL);
 
-$options = array('roles' => $fixedroles,  'groups' => $groups, 'courseid' => $course->id, 'fromcourseid' => $fromcourse->id);
-$mform2 = new Group_Operations_Setup2_Form($thisurl, $options);
+$mform2 = new Group_Operations_Setup2_Form($thisurl, array('roles' => $fixedroles,  'groups' => $groups, 'courseid' => $course->id, 'fromcourseid' => $fromcourse->id));
 
 if ($mform2->is_cancelled()) {
     echo $OUTPUT->header();
@@ -105,7 +101,7 @@ if ($mform2->is_cancelled()) {
     echo $OUTPUT->print_box(get_string('cancelledmsg', 'local_groupcopy'));
     echo $OUTPUT->continue_button($CFG->wwwroot.'/course/view.php?id='.$courseid);
     echo $OUTPUT->footer();
-    die;
+    exit;
 } elseif ($data = $mform2->get_data()) {
 
     echo $OUTPUT->header();
@@ -138,7 +134,7 @@ if ($mform2->is_cancelled()) {
             }
         }
 
-        // Getting context for course.
+        // getting context for course
         $currentcontext = context_course::instance($courseid);
         if ($allassigns = $DB->get_records('role_assignments', array('contextid' => $currentcontext->id))) {
             foreach ($allassigns as $asg) {
@@ -186,8 +182,7 @@ if ($mform2->is_cancelled()) {
                     foreach ($groupgroupings as $groupingbind) {
                         $grouping = $DB->get_record('groupings', array('id' => $groupingbind->groupingid));
                         $oldgroupingid = $grouping->id;
-                        $params = array('name' => $grouping->name, 'courseid' => $data->id);
-                        if (!$groupingintheway = $DB->get_record('groupings', $params)) {
+                        if (!$groupingintheway = $DB->get_record('groupings', array('name' => $grouping->name, 'courseid' => $data->id))) {
                             unset($grouping->id);
                             $grouping->courseid = $data->id;
                             $grouping->timecreated = time();
@@ -204,19 +199,16 @@ if ($mform2->is_cancelled()) {
             }
         }
 
-        /*
-         * theoretically, all old group/groupings bindings should have been duplicated to
-         * combination of newgroup/newgrouping/oldgroup/oldgrouping in target course.
-         */
+        // theoretically, all old group/groupings bindings should have been duplicated to
+        // combination of newgroup/newgrouping/oldgroup/oldgrouping in target course.
 
         if (!empty($BACKUP_IDS->groups)) {
 
-            // Bind all possible groupings looking at source structure.
+            // bind all possible groupings looking at source structure
             if ($groupbinds = $DB->get_records_list('groupings_groups', 'groupid', array_keys($BACKUP_IDS->groups))) {
                 foreach ($groupbinds as $bind) {
                     // discard non relevant pairs... if any
-                    if (!array_key_exists($bind->groupingid, $BACKUP_IDS->groupings) ||
-                            !array_key_exists($bind->groupid, $BACKUP_IDS->groups)) {
+                    if (!array_key_exists($bind->groupingid, $BACKUP_IDS->groupings) || !array_key_exists($bind->groupid, $BACKUP_IDS->groups)) {
                         continue;
                     }
                     unset($bind->id);
@@ -232,29 +224,32 @@ if ($mform2->is_cancelled()) {
         mtrace(get_string('nogroupstructuretocopy', 'local_groupcopy'));
     }
 
-    // If some roles to copy and we are not a metacourse.
+    // if some roles to copy and we are not a metacourse
     if (!empty($data->roles)) {
-        /*
-         * for each role, get original enrolments and copy them to target context
-         * hidden status will be kept
-         */
+        // for each role, get original enrolments and copy them to target context
+        // hidden status will be kept
         $oldcontext = context_course::instance($fromcourseid);
         $nonmetacourserolesarr = get_config('enrol_meta', 'nosyncroleids');
         foreach ($data->roles as $rid) {
             // Foreach enrolment copy enrolment.
             $role = $DB->get_record('role', array('id' => $rid));
 
-            // Avoid synced by metacourse roles.
-            // TODO : reexamine against moodle 2 metacourse enrolements.
+            // avoid synced by metacourse roles
+            // @TODO : reexamine against moodle 2 metacourse enrolements 
+            /*
+            if ($course->metacourse){
+                if (!in_array($role->id, $nonmetacourserolesarr)) continue;
+            }
+            */
 
             $enrol = $DB->get_record('enrol', array('enrol' => 'manual', 'courseid' => $courseid, 'status' => ENROL_INSTANCE_ENABLED));
             $enrolplugin = enrol_get_plugin('manual');
 
             if ($incominguserassigns = get_users_from_role_on_context($role, $oldcontext)) {
                 foreach ($incominguserassigns as $assign) {
-                    // Only report users in groups that were copied.
+                    // only report users in groups that were copied
                     if (in_array($assign->userid, $BACKUP_IDS->allgroupsusers)) {
-                        // Check if user is really enrolled or simply has extra roles.
+                        // check if user is really enrolled or simply has extra roles.
                         if (is_enrolled($oldcontext, $assign->userid)) {
                             $enrolplugin->enrol_user($enrol, $assign->userid, $role->id, time(), 0, ENROL_USER_ACTIVE);
                             mtrace(get_string('enroluser', 'local_groupcopy', $assign->userid));
@@ -272,7 +267,7 @@ if ($mform2->is_cancelled()) {
     } else {
         mtrace(get_string('noroleschoosedtosync', 'local_groupcopy'));
     }
-
+    
     /*
      * finally get all group to user assignation from really copied
      * as users might have already old assignment in this course, we need check again

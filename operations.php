@@ -17,11 +17,11 @@
 /**
  * Print an overview of groupings & group membership
  *
- * @author      Valery Fremaux valery.fremaux@gmail.com
- * @version     0.0.1
- * @license     http://www.gnu.org/copyleft/gpl.html GNU Public License
- * @package     local_groupcopy
- * @category    local
+ * @author  Valery Fremaux valery.fremaux@gmail.com
+ * @version 0.0.1
+ * @license http://www.gnu.org/copyleft/gpl.html GNU Public License
+ * @package local
+ * @subpackage groupcopy
  */
 
 require('../../config.php');
@@ -58,11 +58,9 @@ if (has_capability('moodle/course:create', $syscontext)) {
     $creator = true;
 }
 
-/*
- * get all course contexts the user has managegroups capability on
- * those courses are legitimate as source for group structure copying.
- * @see
- */
+// get all course contexts the user has managegroups capability on
+// those courses are legitimate as source for group structure copying.
+// @see
 
 $tcourseids = array();
 
@@ -92,12 +90,10 @@ foreach ($taught_courses as $tcourse) {
     }
 }
 
-$options = array('options' => $options, 'courseid' => $course->id, 'text' => get_string('coursestaught', 'local_groupcopy'));
-$mform1 = new Group_Operations_Setup1_Form($nexturl, $options);
+$mform1 = new Group_Operations_Setup1_Form($nexturl, array('options' => $options, 'courseid' => $course->id, 'text' => get_string('coursestaught', 'local_groupcopy')));
 
 if ($data = $mform1->get_data()) {
-    $params = array('id' => $data->id, 'fromcourse' => $data->fromcourse);
-    redirect(new moodle_url('/local/groupcopy/operations_perform.php', $params));
+    redirect(new moodle_url('/local/groupcopy/operations_perform.php', array('id' => $data->id, 'fromcourse' => $data->fromcourse)));
 }
 
 $url = new moodle_url('/local/groupcopy/operations.php');
