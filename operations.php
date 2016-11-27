@@ -61,25 +61,25 @@ $tcourseids = array();
 
 if ($teachers = get_user_capability_course('moodle/course:managegroups')) {
     foreach ($teachers as $teacher) {
-        if ($teacher->id != $courseid && $teacher->id != SITEID){
+        if ($teacher->id != $courseid && $teacher->id != SITEID) {
             $tcourseids[] = $teacher->id;
         }
     }
 }
 
-$taught_courses = array();
+$taughtcourses = array();
 if (!empty($tcourseids)) {
-    $taught_courses = $DB->get_records_list('course', 'id', $tcourseids, 'sortorder');
+    $taughtcourses = $DB->get_records_list('course', 'id', $tcourseids, 'sortorder');
 }
 
 if (!empty($creator)) {
-    $cat_courses = get_courses($course->category, $sort="c.sortorder ASC", $fields="c.id, c.fullname");
+    $catcourses = get_courses($course->category, 'c.sortorder ASC', 'c.id, c.fullname');
 } else {
-    $cat_courses = array();
+    $catcourses = array();
 }
 
 $options = array();
-foreach ($taught_courses as $tcourse) {
+foreach ($taughtcourses as $tcourse) {
     if ($tcourse->id != $course->id && $tcourse->id != SITEID) {
         $options[$tcourse->id] = format_string($tcourse->fullname);
     }
@@ -90,7 +90,7 @@ $mform1 = new Group_Operations_Setup1_Form($nexturl, $params);
 
 if ($data = $mform1->get_data()) {
     $params = array('id' => $data->id, 'fromcourse' => $data->fromcourse);
-    redirect(new moodle_url('/local/groupcopy/operations_perform.php', $parmas));
+    redirect(new moodle_url('/local/groupcopy/operations_perform.php', $params));
 }
 
 $url = new moodle_url('/local/groupcopy/operations.php');
