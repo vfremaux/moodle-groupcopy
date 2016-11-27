@@ -42,17 +42,13 @@ class Group_Operations_Setup1_Form extends moodleform {
         $mform->addElement('select', 'fromcourse', $text, $options);
 
         // Buttons.
-        $submit_string = get_string('importfromthiscourse', 'local_groupcopy');
-        $this->add_action_buttons(false, $submit_string);
+        $submitstring = get_string('importfromthiscourse', 'local_groupcopy');
+        $this->add_action_buttons(false, $submitstring);
 
         $mform->addElement('hidden', 'id');
         $mform->setType('id', PARAM_INT);
         $mform->setConstants(array('id' => $courseid));
 
-    }
-
-    public function validation($data, $files) {
-        return parent::validation($data, $files);
     }
 }
 
@@ -98,8 +94,8 @@ class Group_Operations_Setup2_Form extends moodleform {
         $mform->addElement('checkbox', 'copygroupings', $strpreclean, '');
 
         // Buttons.
-        $submit_string = get_string('importgroupsandusers', 'local_groupcopy');
-        $this->add_action_buttons(true, $submit_string);
+        $submitstring = get_string('importgroupsandusers', 'local_groupcopy');
+        $this->add_action_buttons(true, $submitstring);
 
         $mform->addElement('hidden', 'id');
         $mform->setType('id', PARAM_INT);
@@ -110,7 +106,4 @@ class Group_Operations_Setup2_Form extends moodleform {
         $mform->setConstants(array('fromcourse' => $sourcecourseid));
     }
 
-    public function validation($data, $files) {
-        return parent::validation($data, $files);
-    }
 }
