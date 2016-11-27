@@ -66,6 +66,7 @@ $PAGE->set_heading(get_string('pluginname', 'local_groupcopy'));
 $PAGE->set_title(get_string('pluginname', 'local_groupcopy'));
 $PAGE->navbar->add($strparticipants, new moodle_url('/user/index.php', array('id' => $courseid)));
 $PAGE->navbar->add(get_string('pluginname', 'local_groupcopy'));
+$PAGE->set_pagelayout('admin');
 
 /*
  * get all course contexts the user has managegroups capability on
@@ -154,6 +155,9 @@ if ($mform2->is_cancelled()) {
 
     // Copy groups that are not here.
     $backupids->allgroupsusers = array();
+    $backupids->groupings = array();
+    $backupids->groups = array();
+
     if ($data->groups) {
         foreach ($data->groups as $groupid) {
             $group = $DB->get_record('groups', array('id' => $groupid));
@@ -242,7 +246,8 @@ if ($mform2->is_cancelled()) {
             // Avoid synced by metacourse roles.
             // @TODO : reexamine against moodle 2 metacourse enrolements.
 
-            $enrol = $DB->get_record('enrol', array('enrol' => 'manual', 'courseid' => $courseid, 'status' => ENROL_INSTANCE_ENABLED));
+            $params = array('enrol' => 'manual', 'courseid' => $courseid, 'status' => ENROL_INSTANCE_ENABLED);
+            $enrol = $DB->get_record('enrol', $params);
             $enrolplugin = enrol_get_plugin('manual');
 
             if ($incominguserassigns = get_users_from_role_on_context($role, $oldcontext)) {
