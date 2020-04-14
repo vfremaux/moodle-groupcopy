@@ -14,6 +14,9 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+// Privacy
+$string['privacy:metadata'] = 'The Local GroupCopy plugin does not store any personal data about any user.';
+
 // Group structure copy between courses.
 $string['cancelledmsg'] = 'Cancelled. You are being redirected to course.';
 $string['cancelledmsg1'] = 'Cancelled. tou are being redirected to group management index.';
