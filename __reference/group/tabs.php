@@ -33,7 +33,6 @@
     $row[] = new tabobject('overview',
                            new moodle_url('/group/overview.php', array('id' => $courseid)),
                            get_string('overview', 'group'));
-
     echo '<div class="groupdisplay">';
     echo $OUTPUT->tabtree($row, $currenttab);
     echo '</div>';

@@ -14,23 +14,18 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-/**
- * Version details.
- *
- * @package    local_groupcopy
- * @category   local
- * @author     Valery Fremaux <valery.fremaux@gmail.com>
- * @copyright  2010 Valery Fremaux <valery.fremaux@gmail.com>
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
+namespace local_groupcopy\privacy;
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version  = 2015062401;   // The (date) version of this plugin.
-$plugin->requires = 2019051100;   // Requires this Moodle version.
-$plugin->component = 'local_groupcopy';
-$plugin->maturity = MATURITY_RC;
-$plugin->release = '3.7.0 (Build 2015062401)';   // Requires this Moodle version.
-
-// Non moodle attributes.
-$plugin->codeincrement = '3.7.0000';
+class provider implements \core_privacy\local\metadata\null_provider {
+    /**
+     * Get the language string identifier with the component's language
+     * file to explain why this plugin stores no data.
+     *
+     * @return  string
+     */
+    public static function get_reason() : string {
+        return 'privacy:metadata';
+    }
+}
